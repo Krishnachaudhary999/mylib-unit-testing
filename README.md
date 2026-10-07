@@ -63,3 +63,4 @@ All four functions throw a `TypeError` if an argument is not a finite number
 ## License
 
 MIT
+# mylib-unit-testing
