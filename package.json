@@ -1,0 +1,23 @@
+{
+  "name": "mylib-unit-testing",
+  "version": "1.0.0",
+  "description": "A small JavaScript arithmetic library with a Mocha + Chai unit test suite.",
+  "type": "module",
+  "main": "src/mylib.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "mocha"
+  },
+  "keywords": [
+    "arithmetic",
+    "mocha",
+    "chai",
+    "unit-testing"
+  ],
+  "author": "Krishna Chaudhary Tharu",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^10.8.2"
+  }
+}
