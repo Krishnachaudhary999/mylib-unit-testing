@@ -1,0 +1,46 @@
+name: Build, test and deliver
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-deliver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build native binary
+        run: mvn -B package -Pnative -Dquarkus.native.container-build=true
+
+      - name: Build Docker image
+        run: docker build -t example-app:${{ github.sha }} .
+
+      - name: Run container and test it
+        run: |
+          docker run -d --name example-app -p 8080:8080 example-app:${{ github.sha }}
+          sleep 5
+          curl -f http://localhost:8080/hello
+          docker rm -f example-app
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image
+        run: |
+          IMAGE=ghcr.io/krishnachaudhary999/example-app
+          docker tag example-app:${{ github.sha }} $IMAGE:latest
+          docker push $IMAGE:latest
